@@ -123,8 +123,8 @@ body::after {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px 28px max(24px, env(safe-area-inset-bottom));
+  justify-content: flex-start;
+  padding: 20px 28px max(32px, env(safe-area-inset-bottom));
   padding-top: calc(max(10px, env(safe-area-inset-top)) + 44px + 16px);
   opacity: 0;
   transform: translateY(20px);
@@ -133,6 +133,9 @@ body::after {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
+
+/* Center screens that don't overflow */
+#s2, #s3 { justify-content: center; }
 
 .screen.active {
   opacity: 1;
@@ -826,7 +829,7 @@ var PROFILES = [
     name:      'Dean',
     emoji:     '🙋',
     photos:    ['me1.jpg', 'me2.jpg', 'me3.jpg'],  // upload these to GitHub
-    tagline:   'An honest question. 30 seconds. Could ruin your life.',
+    tagline:   'An honest census survey. 30 seconds. Could ruin your life.',
     instagram: 'deanpeveylll',
     phone:     '9783523323',
   },

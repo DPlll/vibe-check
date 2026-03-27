@@ -1002,12 +1002,32 @@ function goTo(id) {
 
 // ── Fire rating ─────────────────────────────────────────
 var FIRE_VERDICTS = [
-  '',
-  "I'm calling the police. For both of our safety.",
-  "You're like a 4/10, but I've had two drinks, so the math is starting to work in your favor.",
-  "I've definitely made worse decisions on a Tuesday. I'm listening.",
-  "Wait, stop talking. You're actually ruining how hot I think you are.",
-  "I've already told my mom about us. Don't make me look like a liar."
+  [''],
+  [
+    "I'm calling the police. For both of our safety.",
+    "No. And I want that on the record.",
+    "I've seen better options on a Spirit Airlines flight. Hard pass.",
+  ],
+  [
+    "You're like a 4/10, but I've had two drinks, so the math is starting to work in your favor.",
+    "I wouldn't say yes, but I also wouldn't leave the room. You're welcome.",
+    "You give off 'my ex's friend' energy. Which is somehow both a red flag and a green light.",
+  ],
+  [
+    "I've definitely made worse decisions on a Tuesday. I'm listening.",
+    "Okay this is a problem. I came here with a plan and you're messing it up.",
+    "I'm going to pretend I didn't just feel something. For legal reasons.",
+  ],
+  [
+    "Wait, stop talking. You're actually ruining how hot I think you are.",
+    "I'm going to need you to back up about three feet so I can think clearly.",
+    "My therapist is going to hear about this on Friday. This is your fault.",
+  ],
+  [
+    "I've already told my mom about us. Don't make me look like a liar.",
+    "I would absolutely ruin my situationship for you. No hesitation.",
+    "Where the hell is my husband? — Ray",
+  ],
 ];
 
 function setFire(n) {
@@ -1019,7 +1039,8 @@ function setFire(n) {
   document.getElementById('fireNext').disabled = false;
 
   var vEl = document.getElementById('fireVerdict');
-  vEl.textContent = FIRE_VERDICTS[n] || '';
+  var pool = FIRE_VERDICTS[n] || [''];
+  vEl.textContent = pool[Math.floor(Math.random() * pool.length)];
   vEl.style.opacity = '1';
 }
 

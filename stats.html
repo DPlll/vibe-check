@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VC-1A Internal Records · Classified</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Oswald:wght@400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #f0ebe0;
+  --cream: #faf7f0;
+  --navy: #1a3a6e;
+  --red: #b8251a;
+  --ink: #1c1c1c;
+  --ink-dim: rgba(28,28,28,0.45);
+  --border: rgba(28,28,28,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; background: var(--bg); }
+
+body {
+  font-family: 'Special Elite', monospace;
+  color: var(--ink);
+  padding: 0 0 40px;
+}
+
+/* Ruled lines */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: repeating-linear-gradient(
+    transparent, transparent 31px,
+    rgba(26,58,110,0.07) 31px, rgba(26,58,110,0.07) 32px
+  );
+  pointer-events: none; z-index: 0;
+}
+
+/* Top bar */
+.top-bar {
+  background: var(--navy);
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Classified banner */
+.classified-banner {
+  border: 3px solid var(--red);
+  border-radius: 4px;
+  padding: 10px 16px;
+  text-align: center;
+  margin-bottom: 24px;
+  background: rgba(184,37,26,0.06);
+}
+
+.classified-banner p {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.classified-banner small {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  color: var(--ink-dim);
+  display: block;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* Doc header */
+.doc-header {
+  margin-bottom: 20px;
+}
+
+.doc-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.doc-meta {
+  font-size: 11px;
+  color: var(--ink-dim);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  border-top: 1.5px dashed var(--border);
+  margin: 18px 0;
+}
+
+/* Person rows */
+.subject-row {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+.subject-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.subject-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.subject-emoji { font-size: 20px; margin-right: 8px; }
+
+.verdict-badge {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+}
+
+.verdict-badge.winning {
+  background: rgba(26,58,110,0.1);
+  color: var(--navy);
+  border: 1px solid var(--navy);
+}
+
+.verdict-badge.losing {
+  background: rgba(184,37,26,0.08);
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.stat-cell {
+  text-align: center;
+}
+
+.stat-cell-num {
+  font-family: 'Courier Prime', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  display: block;
+}
+
+.stat-cell-num.yes { color: var(--navy); }
+.stat-cell-num.no  { color: var(--red); }
+.stat-cell-num.pct { color: var(--ink); }
+
+.stat-cell-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  display: block;
+  margin-top: 3px;
+}
+
+/* Totals row */
+.totals-block {
+  background: var(--navy);
+  color: #fff;
+  border-radius: 4px;
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.totals-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.totals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  text-align: center;
+}
+
+.totals-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  display: block;
+}
+
+.totals-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  opacity: 0.6;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Reset button */
+.reset-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: none;
+  border: 1.5px dashed var(--border);
+  border-radius: 4px;
+  color: var(--ink-dim);
+  font-family: 'Special Elite', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  letter-spacing: 0.04em;
+}
+.reset-btn:hover { border-color: var(--red); color: var(--red); }
+
+.footer-note {
+  font-family: 'Special Elite', monospace;
+  font-size: 10px;
+  color: var(--ink-dim);
+  text-align: center;
+  margin-top: 24px;
+  font-style: italic;
+  line-height: 1.7;
+}
+
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <span>Dept. of Good Vibes</span>
+  <span>Internal Records</span>
+  <span>Form VC-1A</span>
+</div>
+
+<div class="page">
+
+  <div class="classified-banner">
+    <p>Classified</p>
+    <small>For authorized personnel only · Do not share this URL</small>
+  </div>
+
+  <div class="doc-header">
+    <p class="doc-title">Tonight's Tally</p>
+    <p class="doc-meta" id="dateStamp"></p>
+  </div>
+
+  <hr />
+
+  <div id="subjectList"></div>
+
+  <div class="totals-block" id="totalsBlock">
+    <p class="totals-title">Overall Census Results</p>
+    <div class="totals-grid">
+      <div>
+        <span class="totals-num" id="totalYes">—</span>
+        <span class="totals-label">Total Approved</span>
+      </div>
+      <div>
+        <span class="totals-num" id="totalNo">—</span>
+        <span class="totals-label">Total Declined</span>
+      </div>
+      <div>
+        <span class="totals-num" id="totalPct">—</span>
+        <span class="totals-label">Approval Rate</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetAll()">Reset all records for tonight</button>
+
+  <p class="footer-note">
+    This document is property of the Bureau of Bar Statistics.<br>
+    Unauthorized access is strictly encouraged.
+  </p>
+
+</div>
+
+<script>
+var PROFILES = [
+  { id: 'me',     name: 'Dean',   emoji: '🙋' },
+  { id: 'nico',   name: 'Nico',   emoji: '😎' },
+  { id: 'ian',    name: 'Ian',    emoji: '🤙' },
+  { id: 'nobel',  name: 'Nobel',  emoji: '✨' },
+  { id: 'kristy', name: 'Kristi', emoji: '🌟' },
+  { id: 'julian', name: 'Julian', emoji: '🫡' },
+];
+
+function getStats(id) {
+  var raw = localStorage.getItem('vc_stats_' + id);
+  return raw ? JSON.parse(raw) : { yes: 0, no: 0 };
+}
+
+function render() {
+  var list = document.getElementById('subjectList');
+  while (list.firstChild) list.removeChild(list.firstChild);
+
+  var grandYes = 0, grandNo = 0;
+
+  PROFILES.forEach(function(p) {
+    var s = getStats(p.id);
+    var total = s.yes + s.no;
+    var pct = total > 0 ? Math.round((s.yes / total) * 100) : 0;
+    grandYes += s.yes;
+    grandNo += s.no;
+
+    var row = document.createElement('div');
+    row.className = 'subject-row';
+
+    var header = document.createElement('div');
+    header.className = 'subject-row-header';
+
+    var nameSpan = document.createElement('span');
+    var emoji = document.createElement('span');
+    emoji.className = 'subject-emoji';
+    emoji.textContent = p.emoji;
+    var nm = document.createElement('span');
+    nm.className = 'subject-name';
+    nm.textContent = p.name;
+    nameSpan.appendChild(emoji);
+    nameSpan.appendChild(nm);
+
+    var badge = document.createElement('span');
+    badge.className = 'verdict-badge ' + (pct >= 50 ? 'winning' : 'losing');
+    badge.textContent = total === 0 ? 'No data' : pct + '% yes';
+
+    header.appendChild(nameSpan);
+    header.appendChild(badge);
+
+    var grid = document.createElement('div');
+    grid.className = 'stat-grid';
+
+    function cell(val, label, cls) {
+      var c = document.createElement('div');
+      c.className = 'stat-cell';
+      var n = document.createElement('span');
+      n.className = 'stat-cell-num ' + (cls || '');
+      n.textContent = val;
+      var l = document.createElement('span');
+      l.className = 'stat-cell-label';
+      l.textContent = label;
+      c.appendChild(n);
+      c.appendChild(l);
+      return c;
+    }
+
+    grid.appendChild(cell(s.yes, 'Approved', 'yes'));
+    grid.appendChild(cell(s.no, 'Declined', 'no'));
+    grid.appendChild(cell(total, 'Total', ''));
+    grid.appendChild(cell(total > 0 ? pct + '%' : '—', 'Rate', 'pct'));
+
+    row.appendChild(header);
+    row.appendChild(grid);
+    list.appendChild(row);
+  });
+
+  var grandTotal = grandYes + grandNo;
+  var grandPct = grandTotal > 0 ? Math.round((grandYes / grandTotal) * 100) : 0;
+
+  document.getElementById('totalYes').textContent = grandYes;
+  document.getElementById('totalNo').textContent = grandNo;
+  document.getElementById('totalPct').textContent = grandTotal > 0 ? grandPct + '%' : '—';
+}
+
+function resetAll() {
+  if (!confirm('Reset ALL records for tonight? This cannot be undone.')) return;
+  PROFILES.forEach(function(p) {
+    localStorage.removeItem('vc_stats_' + p.id);
+  });
+  render();
+}
+
+// Date stamp
+var now = new Date();
+document.getElementById('dateStamp').textContent =
+  'Generated: ' + now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' }) +
+  ' at ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+render();
+</script>
+
+</body>
+</html>

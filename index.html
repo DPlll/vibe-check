@@ -745,27 +745,18 @@ body::after {
       <div class="stamp">Approved</div>
     </div>
 
-    <div class="big-pct" id="yesPct">—</div>
-    <p style="font-family:'Special Elite',monospace;font-size:11px;color:var(--ink-dim);margin-top:4px;margin-bottom:12px;letter-spacing:0.08em">approval rate tonight</p>
-
-    <div class="stats-row">
-      <div class="stat-card">
-        <span class="stat-num" id="s4Yes">0</span>
-        <span class="stat-label">Approved</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-num" id="s4No">0</span>
-        <span class="stat-label">Declined</span>
-      </div>
-    </div>
-
     <div class="note-bubble" id="noteBubble">
       <span class="note-bubble-label">Testimony on file:</span>
     </div>
 
-    <p class="record-text">Your response has been officially logged by the Bureau of Bar Statistics. The Department thanks you for your participation.</p>
+    <p class="record-text">Thank you for taking our census.</p>
+    <p class="record-text" style="margin-top:-10px">If you have any comments or questions about this census, please contact the following:</p>
 
     <div class="contact-row" id="s4Contact"></div>
+
+    <!-- hidden stat trackers, not displayed -->
+    <span id="s4Yes" style="display:none">0</span>
+    <span id="s4No" style="display:none">0</span>
 
     <button class="btn-pass" onclick="nextPerson()">assess the next subject →</button>
     <button class="btn-pass" onclick="resetNight()">reset tonight's records</button>
@@ -779,20 +770,14 @@ body::after {
       <div class="stamp denied">Declined</div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-card">
-        <span class="stat-num" id="s5Yes">0</span>
-        <span class="stat-label">Approved</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-num" id="s5No">0</span>
-        <span class="stat-label">Declined</span>
-      </div>
-    </div>
-
-    <p class="record-text">Your refusal has been noted and filed under: Missed Opportunities. The Department hopes you enjoy the rest of your evening alone.</p>
+    <p class="record-text">Thank you for taking our census.</p>
+    <p class="record-text" style="margin-top:-10px">If you have any comments or questions about this census, please contact the following:</p>
 
     <div class="contact-row" id="s5Contact"></div>
+
+    <!-- hidden stat trackers, not displayed -->
+    <span id="s5Yes" style="display:none">0</span>
+    <span id="s5No" style="display:none">0</span>
 
     <button class="btn-pass" onclick="nextPerson()">assess the next subject →</button>
     <button class="btn-pass" onclick="resetNight()">reset tonight's records</button>

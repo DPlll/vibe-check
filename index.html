@@ -401,6 +401,60 @@ body::after {
   color: rgba(242,170,53,0.4); text-transform: uppercase; text-align: center; margin-top: 24px;
 }
 
+/* ── PHOTO SLIDESHOW ── */
+.slide-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  display: block;
+}
+.slide-img.active { opacity: 1; }
+
+.photo-dots {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  margin-top: 12px;
+  min-height: 5px;
+}
+.photo-dot {
+  height: 5px; width: 5px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.2);
+  transition: width 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+}
+.photo-dot.active { width: 16px; background: var(--gold); }
+
+/* ── CONTACT BUTTONS ── */
+.contact-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 14px;
+}
+.btn-contact {
+  flex: 1;
+  padding: 15px 10px;
+  border-radius: 14px;
+  border: 1.5px solid var(--gold-mid);
+  background: var(--gold-faint);
+  color: var(--gold);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  letter-spacing: 0.02em;
+}
+.btn-contact:hover { background: var(--gold-mid); }
+.btn-contact:active { transform: scale(0.97); }
+
 /* ── PHOTO ENTRANCE ── */
 .s1-enter .photo-ring-outer {
   animation: ring-spin 10s linear infinite, ring-pulse 4s ease-in-out infinite, photo-in 0.65s cubic-bezier(0.34,1.56,0.64,1) both;
@@ -552,11 +606,11 @@ body::after {
   <div class="screen active s1-enter" id="s1">
     <div class="photo-wrap" id="photoWrap">
       <div class="photo-ring-outer">
-        <div class="photo-inner">
-          <img id="profilePhoto" src="" alt="" />
+        <div class="photo-inner" id="photoInner">
           <span id="photoEmoji"></span>
         </div>
       </div>
+      <div class="photo-dots" id="photoDots"></div>
       <div class="tap-badge" id="tapBadge"></div>
     </div>
     <p class="eyebrow">Vibe Check</p>
@@ -603,7 +657,7 @@ body::after {
 
   <!-- SCREEN 4 · YES Result -->
   <div class="screen" id="s4">
-    <p class="eyebrow">The verdict</p>
+    <p class="eyebrow">Thank you!</p>
     <div class="big-pct" id="yesPct">—</div>
     <p style="font-size:12.5px;color:var(--text-dim);margin-top:6px;margin-bottom:4px;letter-spacing:0.08em">said yes tonight</p>
     <div class="stats-row">
@@ -617,16 +671,16 @@ body::after {
       </div>
     </div>
     <div class="note-bubble" id="noteBubble"></div>
-    <p class="affirmation">"The universe rewards<br>the people who say yes."</p>
-    <button class="btn-yes" onclick="nextPerson()">Next person →</button>
-    <button class="btn-ghost" onclick="goTo('s1')">Back to the card</button>
-    <button class="btn-pass" onclick="resetNight()">Reset tonight's stats</button>
+    <p class="affirmation">"Thank you for taking<br>our survey."</p>
+    <div class="contact-row" id="s4Contact"></div>
+    <button class="btn-pass" onclick="nextPerson()">show the next person →</button>
+    <button class="btn-pass" onclick="resetNight()">reset tonight's stats</button>
   </div>
 
   <!-- SCREEN 5 · NO Result -->
   <div class="screen" id="s5">
-    <p class="eyebrow">Playing it safe</p>
-    <h2 style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;text-align:center;line-height:1.15;margin:16px 0">Bold moves<br>require brave people.</h2>
+    <p class="eyebrow">Thank you!</p>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;text-align:center;line-height:1.15;margin:16px 0">Maybe<br>next time.</h2>
     <div class="stats-row">
       <div class="stat-card">
         <span class="stat-num" id="s5Yes">0</span>
@@ -637,10 +691,10 @@ body::after {
         <span class="stat-label">Safe</span>
       </div>
     </div>
-    <p class="affirmation">"Every great story started<br>with someone who said yes<br>when it was scary."</p>
-    <button class="btn-yes" onclick="nextPerson()">Try the next person →</button>
-    <button class="btn-ghost" onclick="goTo('s1')">Back to the card</button>
-    <button class="btn-pass" onclick="resetNight()">Reset stats</button>
+    <p class="affirmation">"Thanks for taking<br>our survey."</p>
+    <div class="contact-row" id="s5Contact"></div>
+    <button class="btn-pass" onclick="nextPerson()">show the next person →</button>
+    <button class="btn-pass" onclick="resetNight()">reset stats</button>
   </div>
 
 </div>
@@ -653,39 +707,49 @@ body::after {
 // ════════════════════════════════════════════════════════
 var PROFILES = [
   {
-    id:      'me',
-    name:    'Your Name',       // <-- change to YOUR name
-    emoji:   '🙋',
-    photo:   'me.jpg',          // <-- your photo file (or '' for emoji)
-    tagline: 'An honest question. 30 seconds. Could change your whole night.',
+    id:        'me',
+    name:      'Your Name',       // <-- change to YOUR name
+    emoji:     '🙋',
+    photos:    ['me1.jpg', 'me2.jpg', 'me3.jpg'],  // upload these to GitHub
+    tagline:   'An honest question. 30 seconds. Could change your whole night.',
+    instagram: '',               // <-- e.g. 'yourusername' (no @)
+    phone:     '',               // <-- e.g. '5551234567'
   },
   {
-    id:      'nico',
-    name:    'Nico',
-    emoji:   '😎',
-    photo:   'nico.jpg',        // <-- or ''
-    tagline: "He's funnier than you think. Give it a shot.",
+    id:        'nico',
+    name:      'Nico',
+    emoji:     '😎',
+    photos:    ['nico1.jpg', 'nico2.jpg', 'nico3.jpg'],
+    tagline:   "He's funnier than you think. Give it a shot.",
+    instagram: '',
+    phone:     '',
   },
   {
-    id:      'ian',
-    name:    'Ian',
-    emoji:   '🤙',
-    photo:   'ian.jpg',
-    tagline: "The kind of person you'll regret not meeting.",
+    id:        'ian',
+    name:      'Ian',
+    emoji:     '🤙',
+    photos:    ['ian1.jpg', 'ian2.jpg', 'ian3.jpg'],
+    tagline:   "The kind of person you'll regret not meeting.",
+    instagram: '',
+    phone:     '',
   },
   {
-    id:      'nobel',
-    name:    'Nobel',
-    emoji:   '✨',
-    photo:   'nobel.jpg',
-    tagline: 'One conversation could be all it takes.',
+    id:        'nobel',
+    name:      'Nobel',
+    emoji:     '✨',
+    photos:    ['nobel1.jpg', 'nobel2.jpg', 'nobel3.jpg'],
+    tagline:   'One conversation could be all it takes.',
+    instagram: '',
+    phone:     '',
   },
   {
-    id:      'kristy',
-    name:    'Kristy',
-    emoji:   '🌟',
-    photo:   'kristy.jpg',
-    tagline: 'Bold enough to ask. Are you bold enough to say yes?',
+    id:        'kristy',
+    name:      'Kristy',
+    emoji:     '🌟',
+    photos:    ['kristy1.jpg', 'kristy2.jpg', 'kristy3.jpg'],
+    tagline:   'Bold enough to ask. Are you bold enough to say yes?',
+    instagram: '',
+    phone:     '',
   },
 ];
 // ════════════════════════════════════════════════════════
@@ -709,11 +773,41 @@ function saveStats(profileId, stats) {
   localStorage.setItem('vc_stats_' + profileId, JSON.stringify(stats));
 }
 
+// ── Slideshow state ──────────────────────────────────────
+var slideInterval = null;
+var currentSlide = 0;
+var loadedPhotos = [];
+
+function startSlideshow(photos) {
+  clearInterval(slideInterval);
+  currentSlide = 0;
+  loadedPhotos = photos;
+  showSlide(0);
+  if (photos.length > 1) {
+    slideInterval = setInterval(function() {
+      currentSlide = (currentSlide + 1) % photos.length;
+      showSlide(currentSlide);
+    }, 3500);
+  }
+}
+
+function showSlide(index) {
+  var imgs = document.querySelectorAll('.slide-img');
+  var dots = document.querySelectorAll('.photo-dot');
+  for (var i = 0; i < imgs.length; i++) imgs[i].classList.toggle('active', i === index);
+  for (var i = 0; i < dots.length; i++) dots[i].classList.toggle('active', i === index);
+}
+
+function advanceSlide() {
+  if (loadedPhotos.length <= 1) return;
+  currentSlide = (currentSlide + 1) % loadedPhotos.length;
+  showSlide(currentSlide);
+}
+
 // ── Render card screen ──────────────────────────────────
 function renderCard() {
   var p = activeProfile();
 
-  // Text content only — no HTML injection
   var headEl = document.getElementById('cardHeadline');
   headEl.textContent = '';
   headEl.appendChild(document.createTextNode('Meet'));
@@ -722,20 +816,69 @@ function renderCard() {
 
   document.getElementById('cardSubline').textContent = p.tagline;
 
-  var img = document.getElementById('profilePhoto');
+  // Build photo slideshow
+  var inner = document.getElementById('photoInner');
   var emojiEl = document.getElementById('photoEmoji');
+  var dotsEl = document.getElementById('photoDots');
 
-  img.classList.remove('loaded');
+  // Remove old slide images
+  var oldImgs = inner.querySelectorAll('.slide-img');
+  for (var i = 0; i < oldImgs.length; i++) inner.removeChild(oldImgs[i]);
+  while (dotsEl.firstChild) dotsEl.removeChild(dotsEl.firstChild);
+
+  var photos = p.photos || [];
+  var validPhotos = [];
+  var loaded = 0;
+  var failed = 0;
+
   emojiEl.textContent = p.emoji;
   emojiEl.style.display = '';
 
-  if (p.photo) {
-    img.style.display = '';
-    img.src = '';
-    img.src = p.photo;
-  } else {
-    img.style.display = 'none';
-    img.src = '';
+  if (!photos.length) {
+    startSlideshow([]);
+    return;
+  }
+
+  // Pre-create all img elements
+  photos.forEach(function(src, idx) {
+    var img = document.createElement('img');
+    img.className = 'slide-img';
+    img.alt = '';
+    inner.insertBefore(img, emojiEl);
+
+    img.addEventListener('load', function() {
+      validPhotos.push({ idx: idx, el: img });
+      loaded++;
+      if (loaded === 1) emojiEl.style.display = 'none'; // hide emoji once first loads
+      checkAllDone();
+    });
+    img.addEventListener('error', function() {
+      inner.removeChild(img);
+      failed++;
+      checkAllDone();
+    });
+    img.src = src;
+  });
+
+  function checkAllDone() {
+    if (loaded + failed < photos.length) return;
+    // Sort by original index
+    validPhotos.sort(function(a, b) { return a.idx - b.idx; });
+    var elems = validPhotos.map(function(x) { return x.el; });
+
+    // Build dots
+    if (elems.length > 1) {
+      elems.forEach(function() {
+        var dot = document.createElement('div');
+        dot.className = 'photo-dot';
+        dotsEl.appendChild(dot);
+      });
+    }
+
+    if (elems.length === 0) {
+      emojiEl.style.display = '';
+    }
+    startSlideshow(elems);
   }
 }
 
@@ -806,6 +949,31 @@ function updateResultScreens(stats) {
   document.getElementById('s5Yes').textContent = stats.yes;
   document.getElementById('s4No').textContent = stats.no;
   document.getElementById('s5No').textContent = stats.no;
+  renderContactButtons('s4Contact');
+  renderContactButtons('s5Contact');
+}
+
+function renderContactButtons(containerId) {
+  var container = document.getElementById(containerId);
+  while (container.firstChild) container.removeChild(container.firstChild);
+  var p = activeProfile();
+
+  if (p.instagram) {
+    var ig = document.createElement('a');
+    ig.className = 'btn-contact';
+    ig.href = 'https://instagram.com/' + encodeURIComponent(p.instagram);
+    ig.target = '_blank';
+    ig.rel = 'noopener noreferrer';
+    ig.textContent = '@ ' + p.instagram;
+    container.appendChild(ig);
+  }
+  if (p.phone) {
+    var ph = document.createElement('a');
+    ph.className = 'btn-contact';
+    ph.href = 'sms:' + encodeURIComponent(p.phone);
+    ph.textContent = 'Text me';
+    container.appendChild(ph);
+  }
 }
 
 // ── Next person ─────────────────────────────────────────
@@ -827,25 +995,16 @@ function resetNight() {
   goTo('s1');
 }
 
-// ── Photo events ────────────────────────────────────────
-var profileImg = document.getElementById('profilePhoto');
-profileImg.addEventListener('load', function() {
-  profileImg.classList.add('loaded');
-  document.getElementById('photoEmoji').style.display = 'none';
-});
-profileImg.addEventListener('error', function() {
-  profileImg.style.display = 'none';
-  document.getElementById('photoEmoji').style.display = '';
-});
-
 // ════════════════════════════════════════════════════════
-//  HIDDEN PROFILE SWITCHER — tap photo 5× to open
+//  PHOTO TAP — advance slide + hidden 5-tap menu trigger
 // ════════════════════════════════════════════════════════
 var tapCount = 0;
 var tapTimer = null;
 var TAP_TARGET = 5;
 
 document.getElementById('photoWrap').addEventListener('click', function() {
+  advanceSlide(); // always advance photo on tap
+
   tapCount++;
   var badge = document.getElementById('tapBadge');
 
@@ -858,9 +1017,12 @@ document.getElementById('photoWrap').addEventListener('click', function() {
     return;
   }
 
-  badge.textContent = TAP_TARGET - tapCount;
-  badge.classList.add('visible');
-  document.getElementById('photoWrap').classList.add('tapping');
+  // Only show badge on taps 3, 4 (subtle hint)
+  if (tapCount >= 3) {
+    badge.textContent = TAP_TARGET - tapCount;
+    badge.classList.add('visible');
+    document.getElementById('photoWrap').classList.add('tapping');
+  }
 
   clearTimeout(tapTimer);
   tapTimer = setTimeout(function() {

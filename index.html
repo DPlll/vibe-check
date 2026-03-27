@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Official Vibe Census · Form VC-1A</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -130,7 +130,7 @@ body::after {
   transform: translateY(20px);
   transition: opacity 0.4s ease, transform 0.4s ease;
   pointer-events: none;
-  overflow-y: auto;
+  overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -192,8 +192,8 @@ body::after {
 }
 
 .photo-frame {
-  width: 180px;
-  height: 200px;
+  width: 155px;
+  height: 172px;
   border: 3px solid var(--navy);
   background: #ddd8cc;
   overflow: hidden;
@@ -687,7 +687,7 @@ body::after {
 
   <!-- SCREEN 1 · The Card -->
   <div class="screen active" id="s1">
-    <img src="logo.png" alt="Official Bureau of Good Vibes" width="110" height="110" style="display:block;margin:0 auto 6px;opacity:0.92"/>
+    <img src="logo.png" alt="Official Bureau of Good Vibes" width="95" height="95" style="display:block;margin:0 auto 4px;opacity:0.92"/>
     <p class="form-eyebrow">Official Assessment</p>
     <h1 class="form-title">Vibe<br>Census</h1>
     <p class="form-subtitle">Bureau of Bar Statistics · Confidential · Do Not Lose</p>

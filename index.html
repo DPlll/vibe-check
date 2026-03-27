@@ -714,7 +714,22 @@ body::after {
       <button class="fire-btn" onclick="setFire(4)">🔥</button>
       <button class="fire-btn" onclick="setFire(5)">🔥</button>
     </div>
-    <p class="fine-print" style="margin-bottom:24px">(Results may vary. Void where prohibited by good taste.)</p>
+
+    <p id="fireVerdict" style="
+      font-family:'Courier Prime',monospace;
+      font-size:13px;
+      font-style:italic;
+      color:var(--ink);
+      text-align:center;
+      line-height:1.5;
+      min-height:44px;
+      padding:6px 8px;
+      margin-bottom:8px;
+      opacity:0;
+      transition:opacity 0.25s ease;
+    "></p>
+
+    <p class="fine-print" style="margin-bottom:16px">(Results may vary. Void where prohibited by good taste.)</p>
 
     <button class="btn-yes" id="fireNext" disabled onclick="goTo('s3')">Proceed to Section 2 →</button>
     <button class="btn-pass" onclick="showCowardModal()">decline to rate (coward option)</button>
@@ -986,6 +1001,15 @@ function goTo(id) {
 }
 
 // ── Fire rating ─────────────────────────────────────────
+var FIRE_VERDICTS = [
+  '',
+  "Oof. I have a boyfriend. Sorry — what I actually mean is I just don't like you.",
+  "I mean... I've seen worse. That's the nicest thing I'll say tonight.",
+  "Okay fine, I see it. I'm not NOT interested. Don't make it weird.",
+  "My friends are going to hear about this. Hypothetically.",
+  "Where the hell is my husband? — Ray"
+];
+
 function setFire(n) {
   fireRating = n;
   var btns = document.querySelectorAll('.fire-btn');
@@ -993,6 +1017,10 @@ function setFire(n) {
     btns[i].classList.toggle('lit', i < n);
   }
   document.getElementById('fireNext').disabled = false;
+
+  var vEl = document.getElementById('fireVerdict');
+  vEl.textContent = FIRE_VERDICTS[n] || '';
+  vEl.style.opacity = '1';
 }
 
 // ── Submit yes ──────────────────────────────────────────
@@ -1077,6 +1105,9 @@ function nextPerson() {
   for (var i = 0; i < btns.length; i++) btns[i].classList.remove('lit');
   document.getElementById('fireNext').disabled = true;
   document.getElementById('noteInput').value = '';
+  var vEl = document.getElementById('fireVerdict');
+  vEl.textContent = '';
+  vEl.style.opacity = '0';
   goTo('s2');
 }
 
